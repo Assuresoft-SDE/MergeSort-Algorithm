@@ -1,6 +1,7 @@
 import java.util.Arrays;
 
 public class Mergesort {
+    private static final int START_POSITION = 0;
 
     public static int[] mergeSortAlgorithm(int[] listToSort) {
         if (listToSort.length <= 1) {
@@ -10,7 +11,7 @@ public class Mergesort {
         int halfSize = listToSort.length / 2;
         int[] halfLeft = Arrays.copyOfRange(
                 listToSort,
-                0,
+                START_POSITION,
                 halfSize);
         int[] halfRight = Arrays.copyOfRange(
                 listToSort,
@@ -26,18 +27,6 @@ public class Mergesort {
     }
 
     private static int[] merge(int[] halfLeft, int[] halfRight) {
-        int[] mergedList = new int[halfLeft.length + halfRight.length];
-
-        mergedList = merge(mergedList, halfLeft, halfRight, 0);
-        return mergedList;
-    }
-
-    private static int[] merge(
-            int[] mergedList,
-            int[] halfLeft,
-            int[] halfRight,
-            int posMerged
-    ) {
         if (halfLeft.length == 0) {
             return halfRight;
         }
@@ -46,23 +35,34 @@ public class Mergesort {
         }
 
         int[] current = {};
+        int[] mergedList = new int[halfLeft.length + halfRight.length];
 
-        if (halfLeft[0] <= halfRight[0]) {
-            mergedList[posMerged] = halfLeft[0];
-            int[] left = Arrays.copyOfRange(halfLeft, 1, halfLeft.length);
-            current = merge(mergedList, left, halfRight, posMerged + 1);
+        if (halfLeft[START_POSITION] <= halfRight[START_POSITION]) {
+            mergedList[START_POSITION] = halfLeft[START_POSITION];
+            int[] left = Arrays.copyOfRange(
+                    halfLeft,
+                    START_POSITION + 1,
+                    halfLeft.length
+            );
+            current = merge(left, halfRight);
 
         } else {
-            mergedList[posMerged] = halfRight[0];
-            int[] right = Arrays.copyOfRange(halfRight, 1, halfRight.length);
-            current = merge(mergedList, halfLeft, right, posMerged + 1);
+            mergedList[START_POSITION] = halfRight[START_POSITION];
+            int[] right = Arrays.copyOfRange(
+                    halfRight,
+                    START_POSITION + 1,
+                    halfRight.length
+            );
+            current = merge(halfLeft, right);
         }
 
-        if (current.length == mergedList.length) {
-            mergedList[posMerged] = current[posMerged];
-        } else {
-            mergedList[posMerged + 1] = current[0];
-        }
+        System.arraycopy(
+                current,
+                START_POSITION,
+                mergedList,
+                START_POSITION + 1,
+                current.length
+        );
 
         return mergedList;
     }
